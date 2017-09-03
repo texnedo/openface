@@ -45,7 +45,7 @@ openfaceModelDir = os.path.join(modelDir, 'openface')
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('imgs', type=str, nargs='+', help="Input images.")
+parser.add_argument('imgs', type=str, help="Input images folder")
 parser.add_argument('--dlibFacePredictor', type=str, help="Path to dlib's face predictor.",
                     default=os.path.join(dlibModelDir, "shape_predictor_68_face_landmarks.dat"))
 parser.add_argument('--networkModel', type=str, help="Path to Torch network model.",
@@ -136,12 +136,14 @@ def getReps(imgPath):
 allReps = []
 allNames = []
 allImages = []
-for img in args.imgs:
-    reps, boxes, name = getReps(img)
-    for i in range(0, len(reps)):
-        allReps.append(reps[i])
-        allNames.append(name)
-        allImages.append(img)
+for img in os.listdir(args.imgs):
+    imgPath = args.imgs + img
+    if imgPath.endswith(".jpg"):
+        reps, boxes, name = getReps(imgPath)
+        for i in range(0, len(reps)):
+            allReps.append(reps[i])
+            allNames.append(name)
+            allImages.append(imgPath)
 
 if args.verbose:
     print("Result reps array length: {}".format(len(allReps)))
